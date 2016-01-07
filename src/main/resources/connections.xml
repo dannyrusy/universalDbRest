@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<connections>
+    
+    <connection>
+        <dbType>MYSQL</dbType>
+        <name>LOCAL_GENERIC_TEST_1</name>
+        <jdbcUrl>jdbc:mysql://localhost:3306/generictest_1</jdbcUrl>
+        <user>root</user>
+        <password>welcome</password>
+        <readOnly>true</readOnly>
+        <autoCommit>false</autoCommit>
+    </connection>
+    
+    <connection>
+        <dbType>MYSQL</dbType>
+        <name>LOCAL_GENERIC_TEST_2</name>
+        <jdbcUrl>jdbc:mysql://localhost:3306/generictest_2</jdbcUrl>
+        <user>root</user>
+        <password>welcome</password>
+        <readOnly>true</readOnly>
+        <autoCommit>false</autoCommit>
+    </connection>
+    
+</connections>
