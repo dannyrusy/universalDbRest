@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -164,20 +165,51 @@ public class ConnectionsManager {
 	public static JSONObject getColumnsList (String dbName, String tableName) throws SQLException  {
 		JSONObject jsonObject = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
-
+		
 		Map<String, Connection> connList = ConnectionsManager.getConnectionsList();
 		Connection conn = connList.get(dbName);
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT * FROM "+tableName+"");
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int totColumn = rsmd.getColumnCount();
-		System.out.println(totColumn); 
 		for (int i = 1; i < totColumn+1; i++) {
-			jsonArray.put(rsmd.getColumnName(i));
+			JSONObject jsonObjectCol = new JSONObject();
+			jsonObjectCol.put("NAME", rsmd.getColumnName(i));
+			jsonObjectCol.put("TYPE", rsmd.getColumnTypeName(i));
+			jsonObjectCol.put("SIZE", rsmd.getColumnDisplaySize(i));
+			jsonArray.put(jsonObjectCol);
 		}
 		jsonObject.put("COLUMNS", jsonArray);
 		
 		return jsonObject;
 	}
+	
+
+	public static JSONObject getAllRow (String dbName, String tableName) throws SQLException  {
+		
+		JSONObject jsonObject = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+		
+		Map<String, Connection> connList = ConnectionsManager.getConnectionsList();
+		Connection conn = connList.get(dbName);
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM "+tableName+"");
+		
+		JSONArray colList = getColumnsList(dbName, tableName).getJSONArray("COLUMNS");
+		
+		while (rs.next()) {
+			JSONObject jsonObjectRow = new JSONObject();
+			for (int i = 0; i < colList.length(); i++) {
+				String nomeCol = colList.getJSONObject(i).getString("NAME");;
+				jsonObjectRow.put(nomeCol, rs.getString(nomeCol));
+			}
+			jsonArray.put(jsonObjectRow);
+		}
+		jsonObject.put("ROWS", jsonArray);
+		
+		return jsonObject;
+		
+	}
+	
 	
 }
